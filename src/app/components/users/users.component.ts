@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from 'src/app/models/User';
 
 @Component({
@@ -7,10 +7,17 @@ import { User } from 'src/app/models/User';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+  user: User = {
+    firstName: '',
+    lastName: '',
+    email: ''
+  };
   users: User[];
   showExtended: boolean = true;
   loaded: boolean = false;
-  enableAdd: boolean = true;
+  enableAdd: boolean = false;
+  showUserForm: boolean = false;
+  @ViewChild('userForm', { static: false }) form: any;
 
   constructor() {}
 
@@ -19,12 +26,7 @@ export class UsersComponent implements OnInit {
       {
         firstName: 'John',
         lastName: 'Doe',
-        age: 30,
-        address: {
-          street: '50 Main st',
-          city: 'Boston',
-          state: 'Ma'
-        },
+        email: 'john@gmail.com',
         isActive: true,
         registered: new Date('01/02/2018 08:30:00'),
         hide: false
@@ -32,12 +34,7 @@ export class UsersComponent implements OnInit {
       {
         firstName: 'Kevin',
         lastName: 'Johnson',
-        age: 34,
-        address: {
-          street: '20 School st',
-          city: 'Lynn',
-          state: 'Ma'
-        },
+        email: 'kevin@gmail.com',
         isActive: false,
         registered: new Date('01/02/2018 08:30:00'),
         hide: true
@@ -45,12 +42,7 @@ export class UsersComponent implements OnInit {
       {
         firstName: 'Karen',
         lastName: 'Williams',
-        age: 26,
-        address: {
-          street: '55 Mill st',
-          city: 'Miami',
-          state: 'Fl'
-        },
+        email: 'karen@gmail.com',
         isActive: true,
         registered: new Date('01/02/2018 08:30:00'),
         hide: true
@@ -60,7 +52,17 @@ export class UsersComponent implements OnInit {
     this.loaded = true;
   }
 
-  addUser(user: User) {
-    this.users.push(user);
+  onSubmit({ value, valid }: { value: User; valid: boolean }) {
+    if (!valid) {
+      console.log('Form is not valid');
+    } else {
+      value.isActive = true;
+      value.registered = new Date();
+      value.hide = true;
+
+      this.users.unshift(value);
+
+      this.form.reset();
+    }
   }
 }
